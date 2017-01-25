@@ -37,37 +37,46 @@ namespace CSF.Configuration.Data
   public static class ConnectionStringSettingsExtensions
   {
     /// <summary>
-    /// Opens the connection.
+    /// Creates and returns an open <c>IDbConnection</c> instance.
     /// </summary>
-    /// <returns>
-    /// The connection.
-    /// </returns>
-    /// <param name='settings'>
-    /// Settings.
-    /// </param>
-    /// <exception cref='ArgumentNullException'>
-    /// Is thrown if <paramref name="settings"/> is null.
-    /// </exception>
-    /// <exception cref="ConfigurationErrorsException">
-    /// If <paramref name="settings"/> refers to a provider invariant name that is not registered with the .NET
-    /// framework.
-    /// </exception>
+    /// <returns>The connection instance.</returns>
+    /// <param name="settings">Connection string settings.</param>
     public static IDbConnection CreateAndOpenConnection(this ConnectionStringSettings settings)
     {
-      IDbConnection output;
-      DbProviderFactory factory;
-      
+      var factory = CreateConnectionFactory(settings);
+
+      var connection = factory();
+      connection.Open();
+
+      return connection;
+    }
+
+    /// <summary>
+    /// Creates and returns a connection factory instance.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This connection factory is a delegate which is capable of creating <c>IDbConnection</c> instances.
+    /// Those instances are not automatically opened, so it is up to the consuming code to open and dispose of
+    /// connections.
+    /// </para>
+    /// </remarks>
+    /// <returns>The connection factory delegate.</returns>
+    /// <param name="settings">Connection string settings.</param>
+    public static Func<IDbConnection> CreateConnectionFactory(this ConnectionStringSettings settings)
+    {
       if(settings == null)
       {
-        throw new ArgumentNullException ("settings");
+        throw new ArgumentNullException (nameof(settings));
       }
-      
-      factory = DbProviderFactories.GetFactory(settings.ProviderName);
-      output = factory.CreateConnection();
-      output.ConnectionString = settings.ConnectionString;
-      output.Open();
-      
-      return output;      
+
+      var factory = DbProviderFactories.GetFactory(settings.ProviderName);
+
+      return () => {
+        var output = factory.CreateConnection();
+        output.ConnectionString = settings.ConnectionString;
+        return output;
+      };
     }
   }
 }
