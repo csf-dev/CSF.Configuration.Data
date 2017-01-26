@@ -4,7 +4,7 @@
 // Author:
 //       Craig Fowler <craig@craigfowler.me.uk>
 //
-// Copyright (c) 2016 Craig Fowler
+// Copyright (c) 2017 Craig Fowler
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +29,8 @@ using System.Runtime.CompilerServices;
 
 [assembly: CLSCompliant(true)]
 [assembly: AssemblyTitle("CSF.Configuration.Data")]
-[assembly: AssemblyDescription("Helper classes related to the System.Configuration and System.Data namespaces")]
+[assembly: AssemblyDescription("Useful types specific to configuration of databases")]
 [assembly: AssemblyCompany("CSF Software Limited")]
-[assembly: AssemblyProduct("CSF Software Utilities")]
 [assembly: AssemblyCopyright("CSF Software Limited")]
 
 #if DEBUG
@@ -40,5 +39,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("Release")]
 #endif
 
-[assembly: AssemblyVersion("5.0.0")]
-
+[assembly: AssemblyVersion("1.0.0")]
