@@ -6,7 +6,7 @@
     <title>CSF.Configuration.Data</title>
     <authors>CSF Software Ltd</authors>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
-    <projectUrl>http://csf-dev.github.io/CSF.Configuration.Data/</projectUrl>
+    <projectUrl>https://github.com/csf-dev/CSF.Configuration.Data</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Useful types specific to configuration of databases.</description>
     <copyright>Copyright 2017</copyright>
