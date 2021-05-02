@@ -31,53 +31,51 @@ using System.Data.Common;
 
 namespace CSF.Configuration.Data
 {
-  /// <summary>
-  /// Extension methods for the <see cref="ConnectionStringSettings"/> type.
-  /// </summary>
-  public static class ConnectionStringSettingsExtensions
-  {
     /// <summary>
-    /// Creates and returns an open <c>IDbConnection</c> instance.
+    /// Extension methods for the <see cref="ConnectionStringSettings"/> type.
     /// </summary>
-    /// <returns>The connection instance.</returns>
-    /// <param name="settings">Connection string settings.</param>
-    public static IDbConnection CreateAndOpenConnection(this ConnectionStringSettings settings)
+    public static class ConnectionStringSettingsExtensions
     {
-      var factory = CreateConnectionFactory(settings);
+        /// <summary>
+        /// Creates and returns an open <c>IDbConnection</c> instance.
+        /// </summary>
+        /// <returns>The connection instance.</returns>
+        /// <param name="settings">Connection string settings.</param>
+        public static IDbConnection CreateAndOpenConnection(this ConnectionStringSettings settings)
+        {
+            var factory = CreateConnectionFactory(settings);
 
-      var connection = factory();
-      connection.Open();
+            var connection = factory();
+            connection.Open();
 
-      return connection;
+            return connection;
+        }
+
+        /// <summary>
+        /// Creates and returns a connection factory instance.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// This connection factory is a delegate which is capable of creating <c>IDbConnection</c> instances.
+        /// Those instances are not automatically opened, so it is up to the consuming code to open and dispose of
+        /// connections.
+        /// </para>
+        /// </remarks>
+        /// <returns>The connection factory delegate.</returns>
+        /// <param name="settings">Connection string settings.</param>
+        public static Func<IDbConnection> CreateConnectionFactory(this ConnectionStringSettings settings)
+        {
+            if(settings == null)
+                throw new ArgumentNullException (nameof(settings));
+
+            var factory = DbProviderFactories.GetFactory(settings.ProviderName);
+
+            return () => {
+                var output = factory.CreateConnection();
+                output.ConnectionString = settings.ConnectionString;
+                return output;
+            };
+        }
     }
-
-    /// <summary>
-    /// Creates and returns a connection factory instance.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This connection factory is a delegate which is capable of creating <c>IDbConnection</c> instances.
-    /// Those instances are not automatically opened, so it is up to the consuming code to open and dispose of
-    /// connections.
-    /// </para>
-    /// </remarks>
-    /// <returns>The connection factory delegate.</returns>
-    /// <param name="settings">Connection string settings.</param>
-    public static Func<IDbConnection> CreateConnectionFactory(this ConnectionStringSettings settings)
-    {
-      if(settings == null)
-      {
-        throw new ArgumentNullException (nameof(settings));
-      }
-
-      var factory = DbProviderFactories.GetFactory(settings.ProviderName);
-
-      return () => {
-        var output = factory.CreateConnection();
-        output.ConnectionString = settings.ConnectionString;
-        return output;
-      };
-    }
-  }
 }
 
